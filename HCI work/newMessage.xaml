@@ -1,0 +1,63 @@
+﻿<Window x:Class="HCI_work.newMessage"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HCI_work"
+        mc:Ignorable="d"
+        
+        Title="newMessage" ResizeMode="NoResize" d:DesignWidth="400" d:DesignHeight="300" x:Name="window">
+   
+    <Grid RenderTransformOrigin="0.498,0.721">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <TextBlock Text="Sender: " Width="45" HorizontalAlignment="Left"/>
+            <TextBox Name="senders" Margin="45,0,0,0" />
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <TextBlock Text="Recipients: " Width="62" HorizontalAlignment="Left"/>
+            <TextBox Name="recipient" Margin="62,0,0,0" />
+        </Grid>
+
+        <Grid Grid.Row="2">
+            <TextBlock Text="Copies:" Width="45" HorizontalAlignment="Left"/>
+            <TextBox Name="copies" Margin="45,0,0,0" />
+        </Grid>
+
+        <Grid Grid.Row="3">
+            <TextBlock Text="Subject:" Width="45" HorizontalAlignment="Left"/>
+            <TextBox Name="subject" Margin="45,0,0,0" />
+        </Grid>
+
+        <Grid Grid.Row="4">
+            <!--<TextBlock Text ="Attachements: " Width="80" Margin="0,0,420,0"/>-->
+            <Button Name="btnAddAttachment" Click="btnAddAttachment_Click" Width="70" HorizontalAlignment="Left">
+                <Image Source="icons/attachment.png" />
+            </Button>
+            <ListBox Name="attachments" Margin="70,0,0,0" >
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+
+        <Grid Grid.Row="5">
+            <TextBox TextWrapping="Wrap" Name="content" Margin="0,0,0,25"/>
+            <Button HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="25" Width="50" Name="SendButton" Click="SendButton_Click">
+                <Image Source="icons/send.png" />
+            </Button>
+        </Grid>
+        
+    </Grid>
+</Window>

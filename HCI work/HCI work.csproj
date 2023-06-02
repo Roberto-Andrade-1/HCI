@@ -8,4 +8,26 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="icons\answer all.png" />
+    <None Remove="icons\answer.png" />
+    <None Remove="icons\attachment.png" />
+    <None Remove="icons\delete.png" />
+    <None Remove="icons\forward.png" />
+    <None Remove="icons\lupa.png" />
+    <None Remove="icons\novoEmail.png" />
+    <None Remove="icons\send.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="icons\answer all.png" />
+    <Resource Include="icons\answer.png" />
+    <Resource Include="icons\attachment.png" />
+    <Resource Include="icons\delete.png" />
+    <Resource Include="icons\forward.png" />
+    <Resource Include="icons\lupa.png" />
+    <Resource Include="icons\novoEmail.png" />
+    <Resource Include="icons\send.png" />
+  </ItemGroup>
+
 </Project>
