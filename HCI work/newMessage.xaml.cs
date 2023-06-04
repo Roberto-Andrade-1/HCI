@@ -18,9 +18,6 @@ using static HCI_work.MainWindow;
 
 namespace HCI_work
 {
-    /// <summary>
-    /// Lógica interna para newMessage.xaml
-    /// </summary>
     public partial class newMessage : Window
     {
 
@@ -54,7 +51,7 @@ namespace HCI_work
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-
+        // botão para adicionar um anexo
         private void btnAddAttachment_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new();
@@ -70,6 +67,7 @@ namespace HCI_work
             }
         }
 
+        // botão para mandar o email
         private void SendButton_Click(object sender, RoutedEventArgs e)
         {
             string recipients = recipient.Text;
@@ -102,6 +100,7 @@ namespace HCI_work
             Close();
         }
 
+        // adiciona ao ficheiro sent
         private void AddToSentItems(Email email)
         {
             var sentItemsFolder = folders.FirstOrDefault(f => f.Name == "Sent");

@@ -14,9 +14,6 @@ using System.Windows.Data;
 
 namespace HCI_work
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
 
@@ -73,13 +70,7 @@ namespace HCI_work
             Folders.Add(trashFolder);
         }
 
-        // sair da app (funciona)
-        private void Exit_Click(object sender, RoutedEventArgs e)
-        {
-            Application.Current.Shutdown();
-        }
-
-
+        // cria a classe folder
         public class Folder : INotifyPropertyChanged
         {
             private string name { get; set; }
@@ -121,7 +112,7 @@ namespace HCI_work
 
         }
 
-
+        // cria a classe email
         public class Email : INotifyPropertyChanged
         {
 
@@ -217,6 +208,12 @@ namespace HCI_work
             }
         }
 
+        // sair da app
+        private void Exit_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
         // selecionar os diferentes folders
         private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
@@ -231,11 +228,6 @@ namespace HCI_work
                         EmailContentTextBlock.Text = string.Empty;
                     }
                 }
-                else if (selectedTreeViewItem.Header is Email selectedEmail)
-                {
-                    EmailContentTextBlock.Text = selectedEmail.Content;
-                    EmailContentTextBlock.Text = selectedEmail.Sender;
-                }
             }
         }
 
@@ -247,12 +239,9 @@ namespace HCI_work
                 Email selectedEmail = (Email)e.AddedItems[0];
                 EmailContentTextBlock.Text = selectedEmail.Sender;
             }
-            else
-            {
-                EmailContentTextBlock.Text = string.Empty;
-            }
         }
 
+        // remover o email
         private void Remove_Click(object sender, RoutedEventArgs e)
         {
             if (NewEmailListView.SelectedItem is Email selectedEmail && SelectedFolder != null)
@@ -278,30 +267,24 @@ namespace HCI_work
             }
         }
 
+
+        // chama a pagina do novo email
         private void NewEmail_Click(object sender, RoutedEventArgs e)
         {
             newMessage emailWindow = new newMessage(Folders);
             emailWindow.ShowDialog();
         }
 
-        private void AddToSentItems(Email email)
-        {
-            var sentItemsFolder = Folders.FirstOrDefault(f => f.Name == "Sent");
-            if (sentItemsFolder != null)
-            {
-                sentItemsFolder.Emails.Add(email);
-            }
-        }
-
+        // mostra na nova pagina o email selecionado
         private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            // Get the selected email from the ListView
+            // seleciona o email da lista
             var selectedEmail = (sender as ListView).SelectedItem as Email;
 
-            // Open the newMessage window
+            // abre a janela
             newMessage emailWindow = new newMessage(Folders);
 
-            // Fill the fields with the data of the selected message
+            // preenche os campos com a informção do email
             emailWindow.subject.Text = selectedEmail.Subject;
             emailWindow.senders.Text = selectedEmail.Sender;
             emailWindow.content.Text = selectedEmail.Content;
@@ -313,20 +296,22 @@ namespace HCI_work
                 emailWindow.attachments.Items.Add(attachment);
             }
 
-            // Disable the send button
+            // desativa os botões
             emailWindow.SendButton.IsEnabled = false;
+            emailWindow.btnAddAttachment.IsEnabled = false;
 
-            // Make the input fields read-only
+            // faz com que seja de leitura
             emailWindow.subject.IsReadOnly = true;
             emailWindow.senders.IsReadOnly = true;
             emailWindow.content.IsReadOnly = true;
             emailWindow.copies.IsReadOnly = true;
             emailWindow.recipient.IsReadOnly = true;
 
-            // Show the email window as a dialog
+            // mostra o email como dialogo
             emailWindow.ShowDialog();
         }
 
+        // link para o botão para importar os emails em xml
         private void Import_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -338,17 +323,18 @@ namespace HCI_work
             }
         }
 
+        // associa os dados
         private void ImportData(string filePath)
         {
             try
             {
-                // Load the XML document from the specified file
+                // carrega o ficheiro xml escolhido
                 XmlDocument xmlDoc = new XmlDocument();
                 xmlDoc.Load(filePath);
 
                 Folders.Clear();
 
-                // Get the root element
+                // elemento raiz
                 XmlElement rootElement = xmlDoc.DocumentElement;
                 if (rootElement.Name != "EmailData")
                 {
@@ -356,7 +342,7 @@ namespace HCI_work
                     return;
                 }
 
-                // Get the folders element
+                // vê o ficheiro a que pertence
                 XmlNodeList FoldersNodes = rootElement.GetElementsByTagName("Folders");
                 if (FoldersNodes.Count == 0)
                 {
@@ -366,12 +352,12 @@ namespace HCI_work
 
                 XmlNode FoldersNode = FoldersNodes[0];
 
-                // Iterate over each folder element
+                // itera por todos os elementos desse ficheiro
                 foreach (XmlNode folderNode in FoldersNode.ChildNodes)
                 {
                     if (folderNode.Name == "Folder")
                     {
-                        // Get the folder name
+                        // vê o nome do ficheiro
                         string folderName = folderNode.Attributes["Name"]?.Value;
                         if (string.IsNullOrEmpty(folderName))
                         {
@@ -379,19 +365,19 @@ namespace HCI_work
                             return;
                         }
 
-                        // Create a new Folder object
+                        // cria um objeto do tipo ficheiro
                         Folder folder = new Folder
                         {
                             Name = folderName,
                             Emails = new ObservableCollection<Email>()
                         };
 
-                        // Get the emails within the folder
+                        // vê os emails dentro desse ficheiro
                         foreach (XmlNode emailNode in folderNode.ChildNodes)
                         {
                             if (emailNode.Name == "Email")
                             {
-                                // Get the email attributes
+                                // vê os atributos do email
                                 string subject = emailNode.Attributes["Subject"]?.Value;
                                 string sender = emailNode.Attributes["Sender"]?.Value;
                                 string content = emailNode.Attributes["Content"]?.Value;
@@ -399,7 +385,7 @@ namespace HCI_work
                                 string recipients = emailNode.Attributes["Recipients"]?.Value;
                                 string attachments = emailNode.Attributes["Attachments"]?.Value;
 
-                                // Create a new Email object
+                                // cria um novo objeto do tipo email
                                 Email email = new Email
                                 {
                                     Subject = subject,
@@ -410,7 +396,7 @@ namespace HCI_work
                                     Attachments = string.IsNullOrEmpty(attachments) ? new List<string>() : attachments.Split(',').Select(attachment => attachment.Trim()).ToList()
                                 };
 
-                                // Add the email to the folder
+                                // adiciona o email ao ficheiro
                                 folder.Emails.Add(email);
                             }
                         }
@@ -418,18 +404,16 @@ namespace HCI_work
                     }
                 }
 
-                // Show a success message
-                MessageBox.Show("Import completed successfully!", "Import", MessageBoxButton.OK, MessageBoxImage.Information);
-
                 NewEmailListView.ItemsSource = Folders.SelectMany(f => f.Emails);
             }
             catch (Exception ex)
             {
-                // Show an error message if there was an exception during import
+                // Mostra uma mensagem de erro caso aconteça durante a importação
                 MessageBox.Show("Error occurred during import:\n" + ex.Message, "Import Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
+        // link para o botão para exportar os emails
         private void Export_Click(object sender, RoutedEventArgs e)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
@@ -440,44 +424,45 @@ namespace HCI_work
 
                 try
                 {
-                    // Create a new XML document
+                    // cria um novo documento do tipo xml
                     XmlDocument xmlDoc = new XmlDocument();
 
-                    // Create the root element
+                    // cria o elemento raiz
                     XmlElement rootElement = xmlDoc.CreateElement("EmailData");
                     xmlDoc.AppendChild(rootElement);
 
-                    // Export folders
+                    // exporta os ficheiros
                     ExportFolders(rootElement);
 
-                    // Save the XML document to the specified file
+                    // salva o ficheiro xml na pasta correta
                     xmlDoc.Save(filePath);
 
-                    // Show a success message
+                    // mensagem de sucesso
                     MessageBox.Show("Export completed successfully!", "Export", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 catch (Exception ex)
                 {
-                    // Show an error message if there was an exception during export
+                    // mostra uma mensagem de erro caaso aconteça durante a exportação
                     MessageBox.Show("Error occurred during export:\n" + ex.Message, "Export Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
 
+        // associa os dados
         private void ExportFolders(XmlElement parentElement)
         {
-            // Create the folders element
+            // cria o elemento do ficheiro
             XmlElement foldersElement = parentElement.OwnerDocument.CreateElement("Folders");
             parentElement.AppendChild(foldersElement);
 
-            // Export each folder
+            // exporta cada ficheiro
             foreach (var folder in Folders)
             {
 
                 XmlElement folderElement = parentElement.OwnerDocument.CreateElement("Folder");
                 folderElement.SetAttribute("Name", folder.Name);
 
-                // Export each email within the folder
+                // exporta cada email dentro do ficheiro
                 foreach (var email in folder.Emails)
                 {
                     XmlElement emailElement = parentElement.OwnerDocument.CreateElement("Email");
@@ -501,10 +486,7 @@ namespace HCI_work
             private readonly Action<object> execute;
             private readonly Func<object, bool> canExecute;
 
-            public RelayCommand(Action<object> execute)
-                : this(execute, null)
-            {
-            }
+            public RelayCommand(Action<object> execute) : this(execute, null) {}
 
             public RelayCommand(Action<object> execute, Func<object, bool> canExecute)
             {
@@ -528,8 +510,5 @@ namespace HCI_work
                 execute(parameter);
             }
         }
-
-
-
     }
 }
